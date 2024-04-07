@@ -6,7 +6,6 @@ use Exception;
 use Memcached;
 use Oralunal\TaggableMemcached\Exceptions\GetException;
 use Oralunal\TaggableMemcached\Exceptions\SetException;
-use Oralunal\TaggableMemcached\Exceptions\SetTagException;
 
 class Cache
 {
@@ -26,9 +25,9 @@ class Cache
     public function __construct(string $server = 'localhost', int $port = 11211, string $prefix = '')
     {
         $this->memcached = new Memcached();
-        $this->memcached->addServer($server, $port); // Default memcached port
+        $this->memcached->addServer($server, $port);
         if($prefix !== '')
-            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $prefix); // Prefix all keys with the app namespace and environment
+            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $prefix);
     }
 
     /**
@@ -164,7 +163,8 @@ class Cache
         }
 
         foreach ($keys as $key) {
-            $this->memcached->delete($key);
+            if(!$this->memcached->delete($key))
+                return false;
         }
 
         return $this->memcached->delete($tag);
