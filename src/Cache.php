@@ -36,7 +36,7 @@ class Cache
      *
      * @param string $server
      * @param int $port
-     * @param string $namespace
+     * @param string $prefix
      * @return Cache
      */
     public static function getInstance(string $server = 'localhost', int $port = 11211, string $prefix = ''): Cache
@@ -77,7 +77,7 @@ class Cache
      * @param $value
      * @param int $ttl
      * @return Cache
-     * @throws SetException|SetTagException
+     * @throws SetException
      */
     public function set(string $key, $value, int $ttl = 60 * 60 * 24): static
     {
@@ -87,15 +87,18 @@ class Cache
 
             // Set the tags
             if(!is_null($this->tags)){
+                try {
+                    $tags = $this->tags;
 
-                $tags = $this->tags;
-
-                if(is_array($tags)){
-                    foreach($tags as $tag) {
-                        $this->setTag($tag, $key);
+                    if (is_array($tags)) {
+                        foreach ($tags as $tag) {
+                            $this->setTag($tag, $key);
+                        }
+                    } else {
+                        $this->setTag($tags, $key);
                     }
-                }else {
-                    $this->setTag($tags, $key);
+                } catch (SetTagException $e) {
+                    throw new SetException($e->getMessage(), $e->getCode());
                 }
             }
 
