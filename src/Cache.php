@@ -71,13 +71,13 @@ class Cache
     }
 
     /**
-     * Get a value from the cache by tag
+     * Get a value from the cache by key
      *
      * @param string $key
      * @param $value
      * @param int $ttl
      * @return Cache
-     * @throws Exception
+     * @throws SetException|SetTagException
      */
     public function set(string $key, $value, int $ttl = 60 * 60 * 24): static
     {
@@ -108,6 +108,8 @@ class Cache
     }
 
     /**
+     * Set the tags for the next set operation
+     *
      * @param array|string $tags
      * @return $this
      */
@@ -118,7 +120,13 @@ class Cache
         return $this;
     }
 
+
     /**
+     * Set a tag for a key
+     *
+     * @param string $tag
+     * @param string $key
+     * @return void
      * @throws SetTagException
      */
     public function setTag(string $tag, string $key): void
