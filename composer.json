@@ -2,6 +2,7 @@
     "name": "oralunal/taggable-memcached",
     "description": "Easy to manage Memcached library with tag feature",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Oralunal\\TaggableMemcached\\": "src/"
