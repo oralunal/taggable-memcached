@@ -17,7 +17,7 @@ class Cache
      *
      * @param string $server
      * @param int $port
-     * @param string $namespace
+     * @param string $prefix
      */
     public function __construct(string $server = 'localhost', int $port = 11211, string $prefix = '')
     {
@@ -55,10 +55,15 @@ class Cache
     {
         $return = $this->memcached->get($key);
 
-        if ($this->memcached->getResultCode() == Memcached::RES_NOTFOUND || $return === false)
+        if($this->memcached->getLastErrorCode() == Memcached::RES_SUCCESS) {
+            if ($this->memcached->getResultCode() == Memcached::RES_NOTFOUND) {
+                return false;
+            } else {
+                return $return;
+            }
+        } else {
             throw new Exception($this->memcached->getLastErrorMessage(), $this->memcached->getLastErrorCode());
-
-        return $return;
+        }
     }
 
     /**
