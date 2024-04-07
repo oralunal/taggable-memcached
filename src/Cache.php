@@ -1,37 +1,46 @@
 <?php
 
-namespace src;
+namespace Oralunal\TaggableMemcached;
 
 use Exception;
 use Memcached;
 
 class Cache
 {
+    public static Cache $instance;
     protected Memcached $memcached;
     protected string $lastKey;
     protected mixed $lastValue;
 
     /**
      * Cache constructor.
-     */
-    public function __construct()
-    {
-        $this->memcached = new Memcached();
-    }
-
-
-    /**
-     * Configure the memcached server
      *
      * @param string $server
      * @param int $port
      * @param string $namespace
-     * @return void
      */
-    public function config(string $server = 'localhost', int $port = 11211, string $namespace = ''): void
+    public function __construct(string $server = 'localhost', int $port = 11211, string $namespace = '')
     {
+        $this->memcached = new Memcached();
         $this->memcached->addServer($server, $port); // Default memcached port
         $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $namespace); // Prefix all keys with the app namespace and environment
+    }
+
+    /**
+     * Get the instance of the Cache class
+     *
+     * @param string $server
+     * @param int $port
+     * @param string $namespace
+     * @return Cache
+     */
+    public static function getInstance(string $server = 'localhost', int $port = 11211, string $namespace = ''): Cache
+    {
+        if (! isset(self::$instance)) {
+            self::$instance = new Cache($server, $port, $namespace);
+        }
+
+        return self::$instance;
     }
 
     /**

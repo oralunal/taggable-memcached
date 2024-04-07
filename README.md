@@ -9,8 +9,7 @@ Usage
 ```php
 use Oralunal\TaggableMemcached\Cache;
 
-$memcached = new Cache();
-$memcached->config(server:'localhost', port:11211, prefix:'taggable_');
+$memcached = new Cache::getInstance(server:'localhost', port:11211, prefix:'taggable_');
 
 $key = 'some_key';
 $value = 'some value';
