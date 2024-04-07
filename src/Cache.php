@@ -19,11 +19,12 @@ class Cache
      * @param int $port
      * @param string $namespace
      */
-    public function __construct(string $server = 'localhost', int $port = 11211, string $namespace = '')
+    public function __construct(string $server = 'localhost', int $port = 11211, string $prefix = '')
     {
         $this->memcached = new Memcached();
         $this->memcached->addServer($server, $port); // Default memcached port
-        $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $namespace); // Prefix all keys with the app namespace and environment
+        if($prefix !== '')
+            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $prefix); // Prefix all keys with the app namespace and environment
     }
 
     /**
@@ -34,10 +35,10 @@ class Cache
      * @param string $namespace
      * @return Cache
      */
-    public static function getInstance(string $server = 'localhost', int $port = 11211, string $namespace = ''): Cache
+    public static function getInstance(string $server = 'localhost', int $port = 11211, string $prefix = ''): Cache
     {
         if (! isset(self::$instance)) {
-            self::$instance = new Cache($server, $port, $namespace);
+            self::$instance = new Cache($server, $port, $prefix);
         }
 
         return self::$instance;
