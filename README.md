@@ -36,3 +36,10 @@ $memcached->set($key, $value)->setTag($tag);
 
 // Delete values by tag
 $memcached->deleteByTag($tag);
+```
+
+TODOs
+- [ ] Add tests
+- [ ] Add more error handling and logging
+- [ ] Add more documentation
+- [ ] Check for other PHP versions (I've just tested with PHP 8.3)
