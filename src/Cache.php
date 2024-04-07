@@ -87,18 +87,14 @@ class Cache
 
             // Set the tags
             if(!is_null($this->tags)){
-                try {
-                    $tags = $this->tags;
+                $tags = $this->tags;
 
-                    if (is_array($tags)) {
-                        foreach ($tags as $tag) {
-                            $this->setTag($tag, $key);
-                        }
-                    } else {
-                        $this->setTag($tags, $key);
+                if (is_array($tags)) {
+                    foreach ($tags as $tag) {
+                        $this->setTag($tag, $key);
                     }
-                } catch (SetTagException $e) {
-                    throw new SetException($e->getMessage(), $e->getCode());
+                } else {
+                    $this->setTag($tags, $key);
                 }
             }
 
@@ -130,27 +126,20 @@ class Cache
      * @param string $tag
      * @param string $key
      * @return void
-     * @throws SetTagException
      */
     public function setTag(string $tag, string $key): void
     {
         if(!is_null($this->tags)) $this->tags = null;
+        else return; // If the tags are not set, what are we doing here?
 
-        try {
-            $keys = $this->get($tag);
+        $keys = $this->memcached->get($tag); // TODO: Can be failed, do we have to handle this?
 
-            if(is_null($keys))
-                $keys = [];
+        if($this->memcached->getResultCode() == Memcached::RES_NOTFOUND)
+            $keys = [];
 
-            if(!in_array($key, $keys)){
-                $keys[] = $key;
-                $this->set($tag, $keys);
-            }else{
-                // Do nothing
-                // The key is already in the tag
-            }
-        } catch (Exception $e) {
-            throw new SetTagException($e->getMessage(), $e->getCode());
+        if(!in_array($key, $keys)){
+            $keys[] = $key;
+            $this->memcached->set($tag, $keys); // TODO: Can be failed, do we have to handle this?
         }
     }
 

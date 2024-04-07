@@ -28,7 +28,7 @@ try{
 } catch(\Oralunal\TaggableMemcached\Exceptions\SetException $e){
     // Memcached failed to set the value
     // Log the error
-    // We don't need to define value here because we did it befora saving it to the memcached server.
+    // We don't need to define value here because we did it before saving it to the memcached server.
 }
 
 // Delete a value
